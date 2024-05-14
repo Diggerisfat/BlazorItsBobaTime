@@ -1,0 +1,50 @@
+﻿@page "/bobaadd"
+@using BlazorItsBobaTime.Models
+@using BlazorItsBobaTime.Services
+@inject IBobaServices _db
+
+<h3>Add new boba</h3>
+
+<EditForm Model="@boba">
+    <label>ID</label>
+    <InputNumber @bind-Value="boba.Id" />
+    <br /><br />
+
+    <label>Size</label>
+    <InputNumber @bind-Value="boba.Size" />
+    <br /><br />
+
+    <label>Type</label>
+    <InputText @bind-Value="boba.Type" />
+    <br /><br />
+
+    <label>Ice</label>
+    <InputNumber @bind-Value="boba.Ice" />
+    <br /><br />
+
+    <label>Sugar</label>
+    <InputNumber @bind-Value="boba.Sugar" />
+    <br /><br />
+
+    <label>Temperature</label>
+    <InputNumber @bind-Value="boba.Temperature" />
+    <br /><br />
+
+    <label>Toppings</label>
+    <InputNumber @bind-Value="boba.Toppings" />
+    <br /><br />
+
+</EditForm>
+<a href="/bobalist">
+<button class="btn btn-outline-primary" @onclick="AddBoba">Add Boba</button>
+</a>
+@code {
+    BobaModel boba = new BobaModel();
+   
+    async Task AddBoba()
+    {
+        await _db.AddBoba(boba);
+    }
+
+
+}

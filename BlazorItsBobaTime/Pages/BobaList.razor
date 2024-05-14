@@ -1,0 +1,97 @@
+﻿
+@page "/bobalist"
+@using BlazorItsBobaTime.Components
+@using BlazorItsBobaTime.Models
+@using BlazorItsBobaTime.Services;
+
+@inject IBobaServices _db
+
+<h3>BobaList</h3> <a href="/bobaadd"><button class="btn btn-secondary">Add New Boba</button></a>
+
+@if (bobas == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Size</th>
+                <th>Type</th>
+                <th>Boba</th>
+                <th>Ice</th>
+                <th>Sugar</th>
+                <th>Temperature</th>
+                <th>Toppings</th>
+                <th>Edit</th>
+                <th>Remove</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach(var boba in bobas)
+            {
+                <tr>
+                    <td>@boba.Id</td>
+                    <td>@boba.Size</td>
+                    <td>@boba.Type</td>
+                    <td>@boba.Boba</td>
+                    <td>@boba.Ice</td>
+                    <td>@boba.Sugar</td>
+                    <td>@boba.Temperature</td>
+                    <td>@boba.Toppings</td>
+                    <td><a href="/editboba/@boba.Id">Edit</a></td>
+                    <td> <button class="btn btn-danger btn-sm" @onclick="() => OpenDeleteDialog(boba)">Delete</button></td>
+                </tr>
+            }
+
+        </tbody>
+
+    </table>
+}
+
+@if(DeleteDialogOpen)
+{
+<ModalDialog Title="Are you sure?" Text="@msg" OnClose="@OnDeleteDialogClose" DialogType="ModalDialog.ModalDialogType.DeleteCancel"></ModalDialog>
+}
+@code {
+    public bool DeleteDialogOpen { get; set;  }
+    BobaModel bobaToDelete;
+    string msg = "Do you want to remove boba : ";
+    List<BobaModel> bobas;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadData();
+    }
+
+    private async Task LoadData()
+    {
+        bobas = await _db.GetAllBobas();
+    }
+
+    private async void OnDeleteDialogClose(bool accepted)
+    {
+        if(accepted)
+        {
+            await _db.RemoveBoba(bobaToDelete);
+            await LoadData();
+            bobaToDelete = null;
+        }
+
+        DeleteDialogOpen = false;
+
+        StateHasChanged();
+    }
+
+    private void OpenDeleteDialog(BobaModel boba)
+    {
+        DeleteDialogOpen = true;
+        bobaToDelete = boba;
+        msg += boba;
+
+        StateHasChanged();
+    }
+}
+

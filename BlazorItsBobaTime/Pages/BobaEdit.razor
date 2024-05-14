@@ -1,0 +1,62 @@
+﻿@page "/editboba/{id}"
+@using BlazorItsBobaTime.Models
+@using BlazorItsBobaTime.Services
+@inject IBobaServices _db
+
+@*Lincoln Bautista Period 2*@
+
+<h3>BobaEdit</h3>
+<EditForm Model="@boba">
+
+    <label for="Size">Size</label> 
+    <InputNumber @bind-Value="boba.Size" />
+    <br /><br />
+
+    <label for="Type">Type</label> 
+    <InputText @bind-Value="boba.Type" />
+    <br /><br />
+
+    <label for="Boba">Boba</label> 
+    <InputNumber @bind-Value="boba.Boba" />
+    <br /><br />
+
+    <label for="Ice">Ice</label> 
+    <InputNumber @bind-Value="boba.Ice" />
+    <br /><br />
+
+    <label for="Sugar">Sugar</label> 
+    <InputNumber @bind-Value="boba.Sugar" />
+    <br /><br />
+
+
+    <label for="Temperature">Temperature</label>
+    <InputNumber @bind-Value="boba.Temperature" />
+    <br /><br />
+
+
+    <label for="Toppings">Toppings</label> 
+    <InputNumber @bind-Value="boba.Toppings" />
+    <br /><br />
+
+</EditForm>
+
+<a href="/bobalist">
+    <button class="btn btn" @onclick="SaveChanges">Save changes</button>
+</a>
+@code {
+    [Parameter]
+    public string id { get; set; }
+
+    BobaModel boba = new BobaModel();
+
+    protected override async Task OnInitializedAsync()
+    {
+        int bobaId = Int32.Parse(id);
+        boba = await _db.GetByBobaID(bobaId);
+    }
+
+    public async Task SaveChanges()
+    {
+        await _db.SaveBoba(boba);
+    }
+}
